@@ -1,5 +1,6 @@
 package com.allthemods.gravitas2.core.mixin;
 
+import com.allthemods.gravitas2.GregitasCore;
 import com.allthemods.gravitas2.util.IAFEntityMap;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.entity.*;

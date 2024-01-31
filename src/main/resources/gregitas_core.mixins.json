@@ -12,8 +12,5 @@
     "WorldGenLightningDragonRoostMixin"
   ],
   "client": [
-  ],
-  "injectors": {
-    "defaultRequire": 1
-  }
+  ]
 }
