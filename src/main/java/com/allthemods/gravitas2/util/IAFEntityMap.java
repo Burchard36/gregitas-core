@@ -14,16 +14,47 @@ import java.util.function.Predicate;
 
 public class IAFEntityMap {
 
-    public static final Map<EntityType<?>, Predicate<float[]>> spawnList = new ConcurrentHashMap<>();
-    public static final Map<EntityType<?>, Predicate<float[]>> dragonList = new ConcurrentHashMap<>();
+    public static final Map<EntityType<?>, List<KoppenClimateClassification>> spawnList = new ConcurrentHashMap<>();
+    public static final Map<EntityType<?>, List<KoppenClimateClassification>> dragonList = new ConcurrentHashMap<>();
 
     public static void init() {
-        spawnList.put(IafEntityRegistry.HIPPOGRYPH.get(), tempAndRainfall -> tempAndRainfall[0] >= 18 && tempAndRainfall[1] >= 300); // TROPICAL_RAINFOREST+
-        spawnList.put(IafEntityRegistry.CYCLOPS.get(), tempAndRainfall -> tempAndRainfall[0] >= 12 && tempAndRainfall[1] >= 350); // HUMID SUBTROPICAL+
-        spawnList.put(IafEntityRegistry.AMPHITHERE.get(), tempAndRainfall -> tempAndRainfall[0] >= 4 && tempAndRainfall[1] < 150); // HOT DESERT+
 
-        dragonList.put(IafEntityRegistry.ICE_DRAGON.get(),tempAndRainfall -> tempAndRainfall[0] <= 4 && tempAndRainfall[1] < 400);
-        dragonList.put(IafEntityRegistry.FIRE_DRAGON.get(),tempAndRainfall -> tempAndRainfall[0] >= 15 && tempAndRainfall[1] > 300);
-        dragonList.put(IafEntityRegistry.LIGHTNING_DRAGON.get(),tempAndRainfall -> tempAndRainfall[0] >= 15 && tempAndRainfall[1] < 200);
+        spawnList.put(IafEntityRegistry.AMPHITHERE.get(), List.of(
+                KoppenClimateClassification.TEMPERATE,
+                KoppenClimateClassification.HOT_DESERT
+        ));
+
+        spawnList.put(IafEntityRegistry.COCKATRICE.get(), List.of(
+                KoppenClimateClassification.HUMID_SUBARCTIC,
+                KoppenClimateClassification.HOT_DESERT,
+                KoppenClimateClassification.HUMID_SUBTROPICAL,
+                KoppenClimateClassification.TROPICAL_SAVANNA
+        ));
+
+        spawnList.put(IafEntityRegistry.DEATH_WORM.get(), List.of(
+                KoppenClimateClassification.COLD_DESERT,
+                KoppenClimateClassification.HOT_DESERT
+        ));
+
+
+        dragonList.put(IafEntityRegistry.ICE_DRAGON.get(), List.of(
+                KoppenClimateClassification.ARCTIC,
+                KoppenClimateClassification.COLD_DESERT,
+                KoppenClimateClassification.SUBARCTIC,
+                KoppenClimateClassification.TUNDRA)
+        );
+
+        dragonList.put(IafEntityRegistry.FIRE_DRAGON.get(), List.of(
+                KoppenClimateClassification.HOT_DESERT,
+                KoppenClimateClassification.HUMID_OCEANIC,
+                KoppenClimateClassification.TROPICAL_SAVANNA,
+                KoppenClimateClassification.HUMID_SUBTROPICAL
+        ));
+
+        dragonList.put(IafEntityRegistry.LIGHTNING_DRAGON.get(), List.of(
+                KoppenClimateClassification.TEMPERATE,
+                KoppenClimateClassification.SUBTROPICAL,
+                KoppenClimateClassification.TROPICAL_RAINFOREST
+        ));
     }
 }

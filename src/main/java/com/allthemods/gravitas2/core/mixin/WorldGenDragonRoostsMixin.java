@@ -9,6 +9,7 @@ import com.github.alexthe666.iceandfire.world.gen.*;
 import com.mojang.serialization.Codec;
 import net.dries007.tfc.common.blocks.TFCBlocks;
 import net.dries007.tfc.common.blocks.rock.Rock;
+import net.dries007.tfc.util.climate.KoppenClimateClassification;
 import net.dries007.tfc.world.chunkdata.ChunkData;
 import net.dries007.tfc.world.chunkdata.ChunkDataProvider;
 import net.dries007.tfc.world.settings.RockSettings;
@@ -26,6 +27,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
+import java.util.List;
 import java.util.Random;
 
 
@@ -34,30 +36,29 @@ public abstract class WorldGenDragonRoostsMixin extends Feature<NoneFeatureConfi
     private static Block TFCRock = TFCBlocks.ROCK_BLOCKS.get(Rock.BASALT).get(Rock.BlockType.HARDENED).get();
     private static Block TFCRock2 = TFCBlocks.ROCK_BLOCKS.get(Rock.BASALT).get(Rock.BlockType.HARDENED).get();
 
-    public WorldGenDragonRoostsMixin(Codec<NoneFeatureConfiguration> codec) {
+    public WorldGenDragonRoostsMixin(final Codec<NoneFeatureConfiguration> codec) {
         super(codec);
     }
 
     /**
      * @author thevortex
-     * @reason
+     * @reason placeholder
      */
     @Overwrite
-    public boolean place(@NotNull FeaturePlaceContext<NoneFeatureConfiguration> context) {
-        EntityType<? extends EntityDragonBase> DRAGONTYPE = this.getDragonType();
-        WorldGenLevel worldIn = context.level();
-        RandomSource rand = context.random();
-        BlockPos pos = context.origin();
-        ChunkDataProvider provider = ChunkDataProvider.get(worldIn);
-        ChunkData data = provider.get(worldIn, pos);
-        float rainfall = data.getRainfall(pos);
-        float avgAnnualTemperature = data.getAverageTemp(pos);
-        RockSettings rocks = data.getRockData().getRock(pos);
+    public boolean place(final FeaturePlaceContext<NoneFeatureConfiguration> context) {
+        final EntityType<? extends EntityDragonBase> dragonType = this.getDragonType();
+        final WorldGenLevel worldIn = context.level();
+        final RandomSource rand = context.random();
+        final BlockPos pos = context.origin();
+        final ChunkDataProvider provider = ChunkDataProvider.get(worldIn);
+        final ChunkData data = provider.get(worldIn, pos);
+        final RockSettings rocks = data.getRockData().getRock(pos);
         TFCRock = rocks.hardened();
         TFCRock2 = rocks.hardened();
-        var climateTest = IAFEntityMap.dragonList.get(DRAGONTYPE);
-        var tempAndRainfall = new float[]{avgAnnualTemperature, rainfall};
-        if (!climateTest.test(tempAndRainfall)) {
+        final KoppenClimateClassification currentPositionClassification = KoppenClimateClassification.classify(data.getAverageTemp(pos), data.getRainfall(pos));
+        final List<KoppenClimateClassification> entityPositionClassification = IAFEntityMap.dragonList.get(dragonType);
+        if (entityPositionClassification == null) return false; // Entity didnt have any data set in the map
+        if (!entityPositionClassification.contains(currentPositionClassification)) {
             return false;
         }
         if (!WorldUtil.canGenerate(IafConfig.generateDragonRoostChance, context.level(), context.random(), context.origin(), this.getId(), true)) {
@@ -72,17 +73,16 @@ public abstract class WorldGenDragonRoostsMixin extends Feature<NoneFeatureConfi
             this.hollowOut(context, radius);
             radius += 15;
             this.generateDecoration(context, radius, isMale);
-            GregitasCore.LOGGER.debug("Spawned at " + context.origin());
             return true;
         }
     }
 
     /**
      * @author thevortex
-     * @reason
+     * @reason placeholder
      */
     @Overwrite
-    private void generateShell(@NotNull FeaturePlaceContext<NoneFeatureConfiguration> context, int radius) {
+    private void generateShell(final FeaturePlaceContext<NoneFeatureConfiguration> context, int radius) {
         int height = radius / 5;
         double circularArea = this.getCircularArea(radius, height);
         BlockPos.betweenClosedStream(context.origin().offset(-radius, -height, -radius), context.origin().offset(radius, 1, radius)).map(BlockPos::immutable).forEach((position) -> {
@@ -95,19 +95,19 @@ public abstract class WorldGenDragonRoostsMixin extends Feature<NoneFeatureConfi
         });
     }
 
-    protected double getCircularArea(int radius, int height) {
-        double area = (radius + height + radius) * 0.333F + 0.5F;
+    protected double getCircularArea(final int radius, final int height) {
+        final double area = (radius + height + radius) * 0.333F + 0.5F;
         return Mth.floor(area * area);
     }
 
     /**
      * @author thevortex
-     * @reason
+     * @reason placeholder
      */
     @Overwrite
-    private void generateSurface(@NotNull FeaturePlaceContext<NoneFeatureConfiguration> context, int radius) {
-        int height = 2;
-        double circularArea = this.getCircularArea(radius, height);
+    private void generateSurface(final FeaturePlaceContext<NoneFeatureConfiguration> context, final int radius) {
+        final int height = 2;
+        final double circularArea = this.getCircularArea(radius, height);
         BlockPos.betweenClosedStream(context.origin().offset(-radius, height, -radius), context.origin().offset(radius, 0, radius)).map(BlockPos::immutable).forEach((position) -> {
             int heightDifference = position.getY() - context.origin().getY();
             if (position.distSqr(context.origin()) <= circularArea && heightDifference < 2 + context.random().nextInt(height) && !context.level().isEmptyBlock(position.below())) {
