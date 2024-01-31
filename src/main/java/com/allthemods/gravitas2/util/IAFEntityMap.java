@@ -21,7 +21,8 @@ public class IAFEntityMap {
 
         spawnList.put(IafEntityRegistry.AMPHITHERE.get(), List.of(
                 KoppenClimateClassification.TEMPERATE,
-                KoppenClimateClassification.HOT_DESERT
+                KoppenClimateClassification.HOT_DESERT,
+                KoppenClimateClassification.TROPICAL_RAINFOREST
         ));
 
         spawnList.put(IafEntityRegistry.COCKATRICE.get(), List.of(
@@ -34,6 +35,21 @@ public class IAFEntityMap {
         spawnList.put(IafEntityRegistry.DEATH_WORM.get(), List.of(
                 KoppenClimateClassification.COLD_DESERT,
                 KoppenClimateClassification.HOT_DESERT
+        ));
+
+        spawnList.put(IafEntityRegistry.SIREN.get(), List.of(
+
+                KoppenClimateClassification.HUMID_OCEANIC,
+                KoppenClimateClassification.HUMID_SUBTROPICAL,
+                KoppenClimateClassification.HUMID_SUBARCTIC
+        ));
+
+        spawnList.put(IafEntityRegistry.SEA_SERPENT.get(), List.of(
+
+                KoppenClimateClassification.HUMID_OCEANIC,
+                KoppenClimateClassification.HUMID_SUBTROPICAL,
+                KoppenClimateClassification.HUMID_SUBARCTIC
+
         ));
 
 
