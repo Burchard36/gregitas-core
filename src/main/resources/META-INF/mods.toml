@@ -46,22 +46,8 @@ license = "LGPLv3" # Want to make your mod open source? Check out https://choose
         side = "BOTH"
 
     [[dependencies.gregitas_core]]
-        modId = "gtceu"
-        mandatory = true
-        versionRange = "[1.1.0,)"
-        ordering = "AFTER"
-        side = "BOTH"
-
-    [[dependencies.gregitas_core]]
         modId = "tfc"
         mandatory = true
         versionRange = "[3.1.0-beta,)"
-        ordering = "AFTER"
-        side = "BOTH"
-
-    [[dependencies.gregitas_core]]
-        modId = "railways"
-        mandatory = true
-        versionRange = "1.5.3+forge-mc1.20.1"
         ordering = "AFTER"
         side = "BOTH"

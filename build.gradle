@@ -105,35 +105,7 @@ repositories {
             includeGroup "curse.maven"
         }
     }
-    maven { // FTB Mods
-        url "https://maven.saps.dev/releases"
-        content {
-            includeGroup "dev.latvian.mods"
-            includeGroup "dev.ftb.mods"
-        }
-    }
-    maven {
-        url "https://maven.saps.dev/snapshots"
-        content {
-            includeGroup "dev.latvian.mods"
-            includeGroup "dev.ftb.mods"
-        }
-    }
-    maven {
-        url "https://maven.ftb.dev/snapshots"
-        content {
-            includeGroup "dev.ftb.mods"
-        }
-    }
-    maven {
-        url "https://maven.ithundxr.dev/releases"
-        content {
-            includeGroup "com.railwayteam.railways"
-        }
-    }
-    flatDir {
-        dir 'libs'
-    }
+
 }
 
 dependencies {
@@ -145,30 +117,12 @@ dependencies {
         it.parchment("org.parchmentmc.data:parchment-${project.minecraft_version}:${project.parchment_mappings}@zip")
         it.officialMojangMappings { nameSyntheticMembers = false }
     }
-
-    modCompileOnly("mezz.jei:jei-${project.minecraft_version}-forge-api:${project.jei_version}") { transitive = false }
-    modCompileOnly("mezz.jei:jei-${project.minecraft_version}-common-api:${project.jei_version}") { transitive = false }
-
-    modImplementation("com.gregtechceu.gtceu:gtceu-${project.minecraft_version}:${project.gtceu_version}") { transitive = false }
-    modImplementation("com.lowdragmc.ldlib:ldlib-forge-${project.minecraft_version}:${project.ldlib_version}") { transitive = false }
-    modImplementation("com.tterrag.registrate:Registrate:${project.registrate_version}")
-    modImplementation("dev.latvian.mods:kubejs-forge:${project.kubejs_version}")
+    
     modImplementation("curse.maven:tfcambiental-940350:${project.tfcambiental_file}")
     modImplementation("curse.maven:terrafirmacraft-302973:${project.terrafirmacraft_file}")
-    modImplementation("dev.ftb.mods:ftb-chunks-forge:${project.ftb_chunks_version}") { transitive = false }
-    modImplementation("dev.ftb.mods:ftb-library-forge:${project.ftb_library_version}") { transitive = false }
-    modImplementation("dev.ftb.mods:ftb-teams-forge:${project.ftb_teams_version}") { transitive = false }
 
-    modRuntimeOnly("com.jozufozu.flywheel:flywheel-forge-1.20.1:0.6.10-7")
-    modRuntimeOnly("com.simibubi.create:create-1.20.1:0.5.1.f-26:all") { transitive = false }
-    modImplementation("blank:Steam_Rails-1.5.3+forge-mc1.20.1") // fixed Accessor
     modImplementation("curse.maven:ice-and-fire-dragons-264231:5037783")
     modImplementation("curse.maven:citadel-331936:4848887")
-
-    modRuntimeOnly("vazkii.patchouli:Patchouli:${project.minecraft_version}-${project.patchouli_version}-FORGE")
-    modRuntimeOnly("top.theillusivec4.curios:curios-forge:${project.curios_version}+${project.minecraft_version}")
-    modRuntimeOnly("dev.toma.configuration:configuration-forge-${project.minecraft_version}:${project.configuration_version}")
-    modRuntimeOnly("mezz.jei:jei-${project.minecraft_version}-forge:${project.jei_version}") { transitive = false }
 
     // Mixin Extras
     implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:${project.mixinextras_version}"))
