@@ -5,6 +5,8 @@ import com.allthemods.gravitas2.util.IAFEntityMap;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.entity.EntityDragonBase;
 import com.github.alexthe666.iceandfire.util.WorldUtil;
+import com.github.alexthe666.iceandfire.world.IafWorldData;
+import com.github.alexthe666.iceandfire.world.IafWorldRegistry;
 import com.github.alexthe666.iceandfire.world.gen.*;
 import com.mojang.serialization.Codec;
 import net.dries007.tfc.common.blocks.TFCBlocks;
@@ -27,6 +29,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -35,7 +38,7 @@ import java.util.Random;
 public abstract class WorldGenDragonRoostsMixin extends Feature<NoneFeatureConfiguration> implements TypedFeature {
     private static Block TFCRock = TFCBlocks.ROCK_BLOCKS.get(Rock.BASALT).get(Rock.BlockType.HARDENED).get();
     private static Block TFCRock2 = TFCBlocks.ROCK_BLOCKS.get(Rock.BASALT).get(Rock.BlockType.HARDENED).get();
-
+    private List<BlockPos> previousDens = new ArrayList<>();
     public WorldGenDragonRoostsMixin(final Codec<NoneFeatureConfiguration> codec) {
         super(codec);
     }
@@ -61,7 +64,8 @@ public abstract class WorldGenDragonRoostsMixin extends Feature<NoneFeatureConfi
         if (!entityPositionClassification.contains(currentPositionClassification)) {
             return false;
         }
-        if (!WorldUtil.canGenerate(IafConfig.generateDragonRoostChance, context.level(), context.random(), context.origin(), this.getId(), true)) {
+        if (!canGenerate(IafConfig.generateDragonRoostChance, context.level(), context.random(), context.origin(), this.getId(), true)) {
+
             return false;
         } else {
             boolean isMale = (new Random()).nextBoolean();
@@ -73,8 +77,38 @@ public abstract class WorldGenDragonRoostsMixin extends Feature<NoneFeatureConfi
             this.hollowOut(context, radius);
             radius += 15;
             this.generateDecoration(context, radius, isMale);
+            this.previousDens.add(pos);
             return true;
         }
+    }
+
+    public boolean canGenerate(int configChance, WorldGenLevel level, RandomSource random, BlockPos origin, String id, boolean checkFluid) {
+        return canGenerate(configChance, level, random, origin, id, IafWorldData.FeatureType.SURFACE, checkFluid);
+    }
+
+    public boolean canGenerate(int configChance, WorldGenLevel level, RandomSource random, BlockPos origin, String id, IafWorldData.FeatureType type, boolean checkFluid) {
+        boolean canGenerate = random.nextInt(configChance) == 0 && IafWorldRegistry.isFarEnoughFromSpawn(level, origin);
+
+        boolean canGenerateInRange = false;
+        if (this.previousDens.size() != 0) {
+            for (BlockPos pos : this.previousDens) {
+                double distance = this.distanceTo(pos, origin);
+                if (distance >= IafConfig.dangerousWorldGenSeparationLimit) {
+                    canGenerateInRange = true;
+                    GregitasCore.LOGGER.info("canGenerateInRange was set to true Distance is: " + distance);
+                    //return canGenerate && checkFluid && !level.getFluidState(origin.below()).isEmpty() ? false : canGenerate;
+                } else {
+                    GregitasCore.LOGGER.info("canGenerateInRange was kept the same: " + distance);
+                    return false;
+                }
+            }
+
+            return canGenerate && checkFluid && !level.getFluidState(origin.below()).isEmpty() ? false : canGenerate;
+        } else return canGenerate && checkFluid && !level.getFluidState(origin.below()).isEmpty() ? false : canGenerate;
+    }
+
+    public double distanceTo(BlockPos pos, BlockPos pos2) {
+        return Math.sqrt(Math.pow(pos2.getX() - pos.getX(), 2) + Math.pow(pos2.getY() - pos.getY(), 2) + Math.pow(pos.getZ() - pos.getZ(), 2));
     }
 
     /**
