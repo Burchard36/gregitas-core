@@ -95,10 +95,10 @@ public abstract class WorldGenDragonRoostsMixin extends Feature<NoneFeatureConfi
                 double distance = this.distanceTo(pos, origin);
                 if (distance >= IafConfig.dangerousWorldGenSeparationLimit) {
                     canGenerateInRange = true;
-                    GregitasCore.LOGGER.info("canGenerateInRange was set to true Distance is: " + distance);
+                    //GregitasCore.LOGGER.info("canGenerateInRange was set to true Distance is: " + distance);
                     //return canGenerate && checkFluid && !level.getFluidState(origin.below()).isEmpty() ? false : canGenerate;
                 } else {
-                    GregitasCore.LOGGER.info("canGenerateInRange was kept the same: " + distance);
+                    //GregitasCore.LOGGER.info("canGenerateInRange was kept the same: " + distance);
                     return false;
                 }
             }
