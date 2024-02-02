@@ -1,6 +1,5 @@
 package com.allthemods.gravitas2.core.mixin;
 
-import com.allthemods.gravitas2.GregitasCore;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.world.IafWorldRegistry;
 import com.github.alexthe666.iceandfire.world.MyrmexWorldData;
@@ -50,20 +49,21 @@ public abstract class WorldGenMyrmexHiveMixin extends Feature<NoneFeatureConfigu
                 for (float j = 0; j < 2 * Math.PI * i; j += 0.5) {
                     int x = (int) Math.floor(Mth.sin(j) * i);
                     int z = (int) Math.floor(Mth.cos(j) * i);
-                    if (direction == Direction.WEST || direction == Direction.EAST) {
-                        if (world.isEmptyBlock(position.offset(0, x, z))) {
-                            decorate(world, position.offset(0, x, z), position, size, rand, WorldGenMyrmexHive.RoomType.TUNNEL);
+                    try {
+                        if (direction == Direction.WEST || direction == Direction.EAST) {
+                            if (world.isEmptyBlock(position.offset(0, x, z))) {
+                                decorate(world, position.offset(0, x, z), position, size, rand, WorldGenMyrmexHive.RoomType.TUNNEL);
+                            }
+                        } else {
+                            if (world.isEmptyBlock(position.offset(x, z, 0))) {
+                                decorate(world, position.offset(x, z, 0), position, size, rand, WorldGenMyrmexHive.RoomType.TUNNEL);
+                            }
                         }
                         if (world.isEmptyBlock(position.offset(0, x, (z - 1)))) {
                             decorateTubers(world, position.offset(0, x, z), rand, WorldGenMyrmexHive.RoomType.TUNNEL);
                         }
-                    } else {
-                        if (world.isEmptyBlock(position.offset(x, z, 0))) {
-                            decorate(world, position.offset(x, z, 0), position, size, rand, WorldGenMyrmexHive.RoomType.TUNNEL);
-                        }
-                        if (world.isEmptyBlock(position.offset(0, x, (z - 1)))) {
-                            decorateTubers(world, position.offset(0, x, z), rand, WorldGenMyrmexHive.RoomType.TUNNEL);
-                        }
+                    } catch (Exception ex) { // Bad practive but im even worse at math so bite me
+                        ex.printStackTrace();
                     }
                 }
             }
@@ -78,19 +78,15 @@ public abstract class WorldGenMyrmexHiveMixin extends Feature<NoneFeatureConfigu
         if (!this.small) {
             int random = rand.nextInt(IafConfig.myrmexColonyGenChance);
             if (random != 0 || !IafWorldRegistry.isFarEnoughFromSpawn(worldIn, pos)) {
-                GregitasCore.LOGGER.info("Could not plate myrmex colony 1 Genration chance: " + random + " out of: " + IafConfig.myrmexColonyGenChance);
                 return false;
             }
 
-            GregitasCore.LOGGER.info("Level type is: " + worldIn.getLevel());
             if (MyrmexWorldData.get(worldIn.getLevel()) == null /*&& MyrmexWorldData.get(worldIn.getLevel()).getNearestHive(pos, 200) != null*/) {
-                GregitasCore.LOGGER.info("Could not plate myrmex colony 2");
                 return false;
             }
         }
 
         if (!this.small && !worldIn.getFluidState(pos.below()).isEmpty()) {
-            GregitasCore.LOGGER.info("Could not place myrmex colony 3");
             return false;
         } else {
 

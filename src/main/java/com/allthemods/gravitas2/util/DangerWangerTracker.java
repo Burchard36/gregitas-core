@@ -1,5 +1,6 @@
 package com.allthemods.gravitas2.util;
 
+import com.allthemods.gravitas2.GregitasCore;
 import com.github.alexthe666.iceandfire.IafConfig;
 import net.minecraft.core.BlockPos;
 
@@ -16,7 +17,11 @@ public class DangerWangerTracker {
 
     public static boolean isNearDanger(final BlockPos position) {
         for (final BlockPos pos : dangerousLocations) {
-            if (distanceTo(pos, position) < IafConfig.dangerousWorldGenDistanceLimit) return true;
+            final double distance = distanceTo(pos, position);
+            if (distance < IafConfig.dangerousWorldGenSeparationLimit) {
+                //GregitasCore.LOGGER.info("Danger check passed with a equation %s < %s".formatted(distance, IafConfig.dangerousWorldGenSeparationLimit));
+                return true;
+            }
         }
         return false;
     }
