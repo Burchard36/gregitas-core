@@ -82,16 +82,18 @@ public abstract class WorldGenMyrmexHiveMixin extends Feature<NoneFeatureConfigu
                 return false;
             }
 
-            if (MyrmexWorldData.get(worldIn.getLevel()) != null /*&& MyrmexWorldData.get(worldIn.getLevel()).getNearestHive(pos, 200) != null*/) {
+            GregitasCore.LOGGER.info("Level type is: " + worldIn.getLevel());
+            if (MyrmexWorldData.get(worldIn.getLevel()) == null /*&& MyrmexWorldData.get(worldIn.getLevel()).getNearestHive(pos, 200) != null*/) {
                 GregitasCore.LOGGER.info("Could not plate myrmex colony 2");
                 return false;
             }
         }
 
         if (!this.small && !worldIn.getFluidState(pos.below()).isEmpty()) {
-            GregitasCore.LOGGER.info("Could not plate myrmex colony 3");
+            GregitasCore.LOGGER.info("Could not place myrmex colony 3");
             return false;
         } else {
+
             this.hasFoodRoom = false;
             this.hasNursery = false;
             this.totalRooms = 0;

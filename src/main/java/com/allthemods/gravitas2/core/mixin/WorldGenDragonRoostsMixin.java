@@ -1,6 +1,7 @@
 package com.allthemods.gravitas2.core.mixin;
 
 import com.allthemods.gravitas2.GregitasCore;
+import com.allthemods.gravitas2.util.DangerWangerTracker;
 import com.allthemods.gravitas2.util.IAFEntityMap;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.entity.EntityDragonBase;
@@ -77,7 +78,7 @@ public abstract class WorldGenDragonRoostsMixin extends Feature<NoneFeatureConfi
             this.hollowOut(context, radius);
             radius += 15;
             this.generateDecoration(context, radius, isMale);
-            this.previousDens.add(pos);
+            DangerWangerTracker.addDanger(pos);
             return true;
         }
     }
@@ -89,22 +90,8 @@ public abstract class WorldGenDragonRoostsMixin extends Feature<NoneFeatureConfi
     public boolean canGenerate(int configChance, WorldGenLevel level, RandomSource random, BlockPos origin, String id, IafWorldData.FeatureType type, boolean checkFluid) {
         boolean canGenerate = random.nextInt(configChance) == 0 && IafWorldRegistry.isFarEnoughFromSpawn(level, origin);
 
-        boolean canGenerateInRange = false;
-        if (this.previousDens.size() != 0) {
-            for (BlockPos pos : this.previousDens) {
-                double distance = this.distanceTo(pos, origin);
-                if (distance >= IafConfig.dangerousWorldGenSeparationLimit) {
-                    canGenerateInRange = true;
-                    //GregitasCore.LOGGER.info("canGenerateInRange was set to true Distance is: " + distance);
-                    //return canGenerate && checkFluid && !level.getFluidState(origin.below()).isEmpty() ? false : canGenerate;
-                } else {
-                    //GregitasCore.LOGGER.info("canGenerateInRange was kept the same: " + distance);
-                    return false;
-                }
-            }
-
-            return canGenerate && checkFluid && !level.getFluidState(origin.below()).isEmpty() ? false : canGenerate;
-        } else return canGenerate && checkFluid && !level.getFluidState(origin.below()).isEmpty() ? false : canGenerate;
+        if (DangerWangerTracker.isNearDanger(origin)) return false;
+        return canGenerate && checkFluid && !level.getFluidState(origin.below()).isEmpty() ? false : canGenerate;
     }
 
     public double distanceTo(BlockPos pos, BlockPos pos2) {
