@@ -69,29 +69,25 @@ public abstract class WorldGenMyrmexHiveMixin extends Feature<NoneFeatureConfigu
             for (float j = 0; j < 2 * Math.PI * i; j += 0.5) {
                 int x = (int) Math.floor(Mth.sin(j) * i);
                 int z = (int) Math.floor(Mth.cos(j) * i);
+                BlockPos offsetPos;
 
-                try {
-                    BlockPos offsetPos;
+                if (direction == Direction.WEST || direction == Direction.EAST) {
+                    offsetPos = position.offset(0, x, z);
+                } else {
+                    offsetPos = position.offset(x, z, 0);
+                }
 
-                    if (direction == Direction.WEST || direction == Direction.EAST) {
-                        offsetPos = position.offset(0, x, z);
-                    } else {
-                        offsetPos = position.offset(x, z, 0);
+                if (world.isAreaLoaded(offsetPos, 1)) {
+                    if (world.isEmptyBlock(offsetPos)) {
+                        decorate(world, offsetPos, position, size, rand, WorldGenMyrmexHive.RoomType.TUNNEL);
                     }
+                }
 
-                    if (world.isAreaLoaded(offsetPos, 1)) {
-                        if (world.isEmptyBlock(offsetPos)) {
-                            decorate(world, offsetPos, position, size, rand, WorldGenMyrmexHive.RoomType.TUNNEL);
-                        }
-                    }
+                BlockPos tuberPos = position.offset(0, x, (z - 1));
 
-                    BlockPos tuberPos = position.offset(0, x, (z - 1));
-
-                    if (world.isAreaLoaded(tuberPos, 1) && world.isEmptyBlock(tuberPos)) {
-                        decorateTubers(world, tuberPos, rand, WorldGenMyrmexHive.RoomType.TUNNEL);
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                // TODO: This may not even work, check for crashes related to myrmex!
+                if (world.isAreaLoaded(tuberPos, 1) && world.isEmptyBlock(tuberPos)) {
+                    decorateTubers(world, tuberPos, rand, WorldGenMyrmexHive.RoomType.TUNNEL);
                 }
             }
         }

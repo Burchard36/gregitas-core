@@ -9,8 +9,7 @@
     "WorldGenDragonRoostsMixin",
     "WorldGenFireDragonRoostMixin",
     "WorldGenIceDragonRoostMixin",
-    "WorldGenLightningDragonRoostMixin",
-    "WorldGenMyrmexHiveMixin"
+    "WorldGenLightningDragonRoostMixin"
   ],
   "client": [
   ]
